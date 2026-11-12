@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DRONE DETECTION</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #0f0f0f;
+            color: white;
+            padding-top: 30px;
+        }
+
+        h1 {
+            font-size: 42px;
+            letter-spacing: 3px;
+            color: #00eaff;
+        }
+
+        #lamp {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin: 40px auto;
+            background: green;
+            transition: 0.3s;
+        }
+
+        #status {
+            font-size: 32px;
+            margin-top: 10px;
+        }
+
+        @keyframes flashRed {
+            0% { background-color: #ff0000; }
+            50% { background-color: #660000; }
+            100% { background-color: #ff0000; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>DRONE DETECTION</h1>
+
+<div id="lamp"></div>
+<div id="status">Listening...</div>
+<div id="peak" style="margin-top:20px; font-size:20px;">Peak Value: 0</div>
+
+<audio id="alarmSound">
+    <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+</audio>
+
+<script>
+    var socket = io();
+    var alarm = document.getElementById("alarmSound");
+    alarm.volume = 1.0;
+
+    let alarmPlaying = false;
+
+    socket.on("update", function(data) {
+        let lamp = document.getElementById("lamp");
+        let status = document.getElementById("status");
+
+        if (data.detected) {
+            lamp.style.animation = "flashRed 0.6s infinite";
+            status.innerHTML = "🚨 DRONE DETECTED";
+            status.style.color = "#ff5555";
+
+            if (!alarmPlaying) {
+                alarm.play();
+                alarm.loop = true;
+                alarmPlaying = true;
+            }
+
+        } else {
+            lamp.style.animation = "";
+            lamp.style.background = "green";
+            status.innerHTML = "Listening...";
+            status.style.color = "white";
+
+            if (alarmPlaying) {
+                alarm.pause();
+                alarm.currentTime = 0;
+                alarmPlaying = false;
+            }
+        }
+
+        document.getElementById("peak").innerHTML =
+            "Peak Value: " + data.peak_value;
+    });
+</script>
+
+</body>
+</html>

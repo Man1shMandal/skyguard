@@ -1,0 +1,16 @@
+Flask>=2.0
+flask-socketio>=5.3.2
+eventlet>=0.33.0
+mss>=6.1.0
+opencv-python>=4.5.5.62
+numpy>=1.23.0
+
+# Optional (use if you plan to load environment variables from a .env file)
+# python-dotenv>=1.0.0
+Flask>=2.0
+flask-socketio>=5.3.2
+python-socketio>=5.7.2
+mss>=6.1.0
+numpy>=1.23.0
+opencv-python-headless>=4.7.0
+eventlet>=0.33.0
